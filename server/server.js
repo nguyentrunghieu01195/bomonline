@@ -436,7 +436,10 @@ io.on('connection', (socket) => {
 });
 
 // SPA routing fallback - serve index.html for any frontend route
-app.get('*', (req, res) => {
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
