@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BOOM NEON - Arcade Bomberman Online Clone</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="app">
+      <!-- MAIN MENU -->
+      <div id="menu-screen" class="screen active">
+        <div class="logo-container">
+          <h1 class="game-logo">BOOM<span class="neon-text">NEON</span></h1>
+          <p class="subtitle">RETRO-FUTURE BOMBER ARENA</p>
+        </div>
+        
+        <div class="menu-buttons">
+          <button id="btn-solo" class="neon-btn">
+            <span class="btn-text">SOLO VS BOTS</span>
+            <span class="btn-glow"></span>
+          </button>
+          <button id="btn-local" class="neon-btn secondary">
+            <span class="btn-text">LOCAL 2 PLAYERS</span>
+            <span class="btn-glow"></span>
+          </button>
+          <button id="btn-online" class="neon-btn info">
+            <span class="btn-text">ONLINE MULTIPLAYER</span>
+            <span class="btn-glow"></span>
+          </button>
+          <button id="btn-how" class="neon-btn">
+            <span class="btn-text">HOW TO PLAY</span>
+            <span class="btn-glow"></span>
+          </button>
+        </div>
+
+        <div class="footer">
+          <p>Created by Antigravity AI Engine • 2026</p>
+        </div>
+      </div>
+
+      <!-- HOW TO PLAY MODAL -->
+      <div id="how-modal" class="modal hidden">
+        <div class="modal-content glass-card">
+          <span class="close-btn">&times;</span>
+          <h2>HOW TO PLAY</h2>
+          <div class="instructions-grid">
+            <div class="player-instruction">
+              <h3>PLAYER 1 (BLUE)</h3>
+              <p>🎮 <strong>Move:</strong> WASD keys</p>
+              <p>💣 <strong>Place Bomb:</strong> SPACEBAR</p>
+            </div>
+            <div class="player-instruction">
+              <h3>PLAYER 2 (PINK)</h3>
+              <p>🎮 <strong>Move:</strong> Arrow Keys</p>
+              <p>💣 <strong>Place Bomb:</strong> ENTER key</p>
+            </div>
+          </div>
+          <div class="powerups-instruction">
+            <h3>POWER-UPS</h3>
+            <div class="powerup-list">
+              <div class="powerup-item"><span class="icon speed-up">👟</span> <span>Speed Up (+Movement Speed)</span></div>
+              <div class="powerup-item"><span class="icon bomb-up">💣</span> <span>Bomb Up (+Max Bombs count)</span></div>
+              <div class="powerup-item"><span class="icon fire-up">🔥</span> <span>Fire Up (+Explosion range)</span></div>
+              <div class="powerup-item"><span class="icon heart-up">❤️</span> <span>Extra Life (+1 Health Point)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUTH SCREEN (LOGIN / REGISTER) -->
+      <div id="auth-screen" class="screen hidden">
+        <div class="auth-box glass-card">
+          <h2 id="auth-title">ACCESS DENIED</h2>
+          <p class="auth-subtitle">AUTHENTICATE PILOT CRITICAL PROTOCOL</p>
+          
+          <div class="auth-tabs">
+            <button id="tab-login" class="tab-btn active">LOGIN</button>
+            <button id="tab-register" class="tab-btn">REGISTER</button>
+          </div>
+
+          <form id="auth-form" class="auth-form">
+            <div class="form-group">
+              <label for="auth-username">USERNAME</label>
+              <input type="text" id="auth-username" required placeholder="ENTER USERNAME" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="auth-password">SECURE KEY (PASSWORD)</label>
+              <input type="password" id="auth-password" required placeholder="ENTER SECURE KEY">
+            </div>
+            <div id="auth-error-msg" class="error-text hidden">Error message here</div>
+            <button type="submit" id="btn-auth-submit" class="neon-btn full-width">AUTHORIZE</button>
+          </form>
+          
+          <button id="btn-auth-back" class="neon-btn secondary small mt-20">BACK TO MAIN MENU</button>
+        </div>
+      </div>
+
+      <!-- LOBBY SCREEN (ROOM LIST & USER PROFILE) -->
+      <div id="lobby-screen" class="screen hidden">
+        <div class="lobby-layout">
+          <!-- Profile sidebar -->
+          <div class="lobby-sidebar glass-card">
+            <div class="profile-header">
+              <div class="profile-avatar">👤</div>
+              <div id="profile-username" class="username">PILOT_NAME</div>
+            </div>
+            <div class="profile-stats">
+              <div class="stat-box">
+                <span class="label">WINS</span>
+                <span id="profile-wins" class="val">0</span>
+              </div>
+              <div class="stat-box">
+                <span class="label">KILLS</span>
+                <span id="profile-kills" class="val">0</span>
+              </div>
+            </div>
+            <div class="lobby-actions">
+              <button id="btn-create-room" class="neon-btn full-width">CREATE ROOM</button>
+              
+              <div class="join-by-code">
+                <input type="text" id="join-code-input" placeholder="ROOM CODE (4-DIGIT)" maxlength="4">
+                <button id="btn-join-code" class="neon-btn info small">JOIN</button>
+              </div>
+              
+              <button id="btn-logout" class="neon-btn secondary small full-width">LOGOUT</button>
+              <button id="btn-lobby-back" class="neon-btn small full-width">BACK TO MENU</button>
+            </div>
+          </div>
+
+          <!-- Active Room Lists & Leaderboard -->
+          <div class="lobby-main">
+            <div class="lobby-rooms-panel glass-card">
+              <div class="panel-header">ACTIVE BATTLE ROOMS</div>
+              <div id="rooms-list-container" class="rooms-list">
+                <!-- Dynamically populated room rows -->
+                <div class="no-rooms">No active rooms. Create one to start!</div>
+              </div>
+            </div>
+            
+            <div class="lobby-leaderboard-panel glass-card">
+              <div class="panel-header">GLOBAL LEADERBOARD</div>
+              <div id="global-leaderboard" class="global-leaderboard-list">
+                <!-- Top players -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROOM WAITING SCREEN -->
+      <div id="room-screen" class="screen hidden">
+        <div class="room-box glass-card">
+          <div class="room-header">
+            <h2>BATTLE ROOM <span id="room-code-display" class="neon-text">####</span></h2>
+            <p>Waiting for pilots to ready up...</p>
+          </div>
+
+          <div class="room-pilots-grid" id="room-pilots-list">
+            <!-- Up to 4 pilots dynamically populated -->
+          </div>
+
+          <!-- Selected character panel -->
+          <div class="room-char-select">
+            <h3>SELECT YOUR FIGHTER</h3>
+            <div class="char-circle-list" id="room-char-list">
+              <!-- Chibi circles to choose character -->
+            </div>
+          </div>
+
+          <div class="room-actions">
+            <button id="btn-room-leave" class="neon-btn secondary">LEAVE ROOM</button>
+            <button id="btn-room-ready" class="neon-btn">READY</button>
+            <button id="btn-room-start" class="neon-btn info hidden">START GAME</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHARACTER SELECT SCREEN (OFFLINE PLAY ONLY) -->
+      <div id="char-select-screen" class="screen hidden">
+        <h2 class="screen-title">CHOOSE YOUR HERO</h2>
+        <div class="char-grid" id="char-grid">
+          <!-- Dynamically populated characters -->
+        </div>
+        <div class="actions">
+          <button id="btn-char-back" class="neon-btn secondary">BACK</button>
+          <button id="btn-char-ready" class="neon-btn disabled" disabled>START BATTLE</button>
+        </div>
+      </div>
+
+      <!-- GAME PLAY SCREEN -->
+      <div id="game-screen" class="screen hidden">
+        <div class="game-layout">
+          <!-- Player Panels Left -->
+          <div class="game-sidebar left-sidebar">
+            <div class="panel-header">PLAYERS</div>
+            <div id="player-stats-container" class="stats-container">
+              <!-- Dynamically populated status of players -->
+            </div>
+          </div>
+
+          <!-- Main Arena Canvas -->
+          <div class="canvas-container glass-card">
+            <div class="arena-header">
+              <span id="game-timer">03:00</span>
+              <span id="arena-message" class="arena-status">GET READY!</span>
+            </div>
+            <canvas id="game-canvas"></canvas>
+          </div>
+
+          <!-- Game Controls/Stats Right -->
+          <div class="game-sidebar right-sidebar">
+            <div class="panel-header">LEADERBOARD</div>
+            <div id="leaderboard-container" class="stats-container">
+              <!-- Score list -->
+            </div>
+            <div class="side-controls">
+              <button id="btn-pause" class="icon-btn">⏸️</button>
+              <button id="btn-mute" class="icon-btn">🔊</button>
+              <button id="btn-quit" class="neon-btn secondary small">QUIT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAME OVER SCREEN -->
+      <div id="gameover-screen" class="screen hidden">
+        <div class="gameover-box glass-card">
+          <h1 id="gameover-title">VICTORY!</h1>
+          <p id="gameover-subtitle">Player 1 wins the match!</p>
+          <div class="match-summary" id="match-summary">
+            <!-- Dynamically populated list of scores/kills -->
+          </div>
+          <div class="gameover-actions">
+            <button id="btn-restart" class="neon-btn">REPLAY</button>
+            <button id="btn-menu" class="neon-btn secondary">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
