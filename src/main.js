@@ -1,7 +1,11 @@
 import './style.css';
 import { io } from 'socket.io-client';
 
-const BACKEND_URL = `${window.location.protocol}//${window.location.hostname}:3000`;
+// Detect if running on Vite dev server (port 5173) to point to local port 3000.
+// In production, point to the current host directly.
+const BACKEND_URL = window.location.port === '5173'
+  ? `${window.location.protocol}//${window.location.hostname}:3000`
+  : `${window.location.protocol}//${window.location.host}`;
 const socket = io(BACKEND_URL, { autoConnect: false });
 
 let currentUser = null; // { id, username, wins, kills, token }

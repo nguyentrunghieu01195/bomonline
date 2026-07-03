@@ -23,6 +23,10 @@ const io = new Server(httpServer, {
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from Vite build in production (unified deploy)
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
 const JWT_SECRET = 'boom_neon_super_secret_key_2026';
 const DB_FILE = path.join(__dirname, 'database.json');
 
@@ -422,6 +426,11 @@ io.on('connection', (socket) => {
   function broadcastRoomList() {
     io.emit('room_list', getActiveRoomList());
   }
+});
+
+// SPA routing fallback - serve index.html for any frontend route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
