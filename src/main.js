@@ -1793,6 +1793,11 @@ class App {
 
     socket.on('room_update', (room) => {
       this.currentRoom = room;
+      // If we're still on the lobby, switch to room screen (e.g. after joining)
+      const roomScreen = document.getElementById('room-screen');
+      if (roomScreen && roomScreen.classList.contains('hidden')) {
+        this.switchScreen('room-screen');
+      }
       this.renderRoomWaitingUI();
     });
 
