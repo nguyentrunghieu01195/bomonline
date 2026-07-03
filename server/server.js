@@ -33,26 +33,33 @@ const DB_FILE = path.join(__dirname, 'database.json');
 // ==========================================================================
 // DATABASE UTILS
 // ==========================================================================
+let inMemoryDB = { users: [] };
+
 function readDB() {
   try {
     if (!fs.existsSync(DB_FILE)) {
-      const initial = { users: [] };
-      fs.writeFileSync(DB_FILE, JSON.stringify(initial, null, 2));
-      return initial;
+      try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(inMemoryDB, null, 2));
+      } catch (e) {
+        // Silently ignore write failures on initial database setup
+      }
+      return inMemoryDB;
     }
     const data = fs.readFileSync(DB_FILE, 'utf8');
-    return JSON.parse(data || '{"users":[]}');
+    inMemoryDB = JSON.parse(data || '{"users":[]}');
+    return inMemoryDB;
   } catch (err) {
-    console.error('Error reading DB:', err);
-    return { users: [] };
+    console.warn('DB read failed, using in-memory fallback:', err.message);
+    return inMemoryDB;
   }
 }
 
 function writeDB(data) {
+  inMemoryDB = data;
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
   } catch (err) {
-    console.error('Error writing DB:', err);
+    console.warn('DB write failed, in-memory state updated only:', err.message);
   }
 }
 
